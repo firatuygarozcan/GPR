@@ -1050,6 +1050,85 @@ def annual_day_heatmap_figure(detail, metric):
     return fig
 
 
+def annual_day_all_buses_figure(detail, time_step):
+    """One saved timestep: each output bus's mean, 95% PI and ground truth."""
+    frame = detail[detail["time_step"].astype(int).eq(int(time_step))].copy()
+    if frame.empty:
+        raise ValueError(f"No state-estimation data for timestep {time_step}.")
+    bus_order = bus_order_from_frame(detail)
+    frame = frame.set_index("bus").loc[bus_order].reset_index()
+    label_lookup = frame_bus_label_lookup(frame)
+    labels = [label_lookup.get(int(bus), f"Internal bus {int(bus)}") for bus in frame.bus]
+    covered = (
+        frame.ground_truth_vm_pu.ge(frame.lower_95_vm_pu)
+        & frame.ground_truth_vm_pu.le(frame.upper_95_vm_pu)
+    )
+    hover = [
+        [row.bus_role, float(row.ground_truth_vm_pu), float(row.predicted_vm_pu),
+         float(row.lower_95_vm_pu), float(row.upper_95_vm_pu),
+         float(row.upper_95_vm_pu - row.lower_95_vm_pu),
+         float(abs(row.predicted_vm_pu - row.ground_truth_vm_pu)),
+         "Inside" if inside else "Outside"]
+        for row, inside in zip(frame.itertuples(index=False), covered)
+    ]
+    hovertemplate = (
+        "%{x}<br>Role: %{customdata[0]}"
+        "<br>Ground truth: %{customdata[1]:.8f} p.u."
+        "<br>GPR mean: %{customdata[2]:.8f} p.u."
+        "<br>Lower 95%: %{customdata[3]:.8f} p.u."
+        "<br>Upper 95%: %{customdata[4]:.8f} p.u."
+        "<br>PI width: %{customdata[5]:.8f} p.u."
+        "<br>Absolute error: %{customdata[6]:.8f} p.u."
+        "<br>Ground truth: %{customdata[7]} 95% PI<extra></extra>"
+    )
+    fig = go.Figure()
+    for role, color in [("measured", "#2a78d6"), ("unmeasured", "#eb6834")]:
+        indices = np.flatnonzero(frame.bus_role.eq(role).to_numpy()).tolist()
+        if not indices:
+            continue
+        part = frame.iloc[indices]
+        fig.add_trace(go.Scatter(
+            x=[labels[i] for i in indices], y=part.predicted_vm_pu.astype(float).tolist(),
+            mode="markers", name=f"{role.title()}: GPR mean + 95% PI",
+            marker={"color": color, "size": 9},
+            error_y={
+                "type": "data", "symmetric": False, "visible": True,
+                "array": (part.upper_95_vm_pu - part.predicted_vm_pu).astype(float).tolist(),
+                "arrayminus": (part.predicted_vm_pu - part.lower_95_vm_pu).astype(float).tolist(),
+                "color": color, "thickness": 2, "width": 5,
+            },
+            customdata=[hover[i] for i in indices], hovertemplate=hovertemplate,
+        ))
+    for inside, color, symbol, name in [
+        (True, "#303030", "diamond", "Ground truth: inside 95% PI"),
+        (False, "#b2182b", "x", "Ground truth: outside 95% PI"),
+    ]:
+        indices = np.flatnonzero(covered.eq(inside).to_numpy()).tolist()
+        if indices:
+            fig.add_trace(go.Scatter(
+                x=[labels[i] for i in indices],
+                y=frame.iloc[indices].ground_truth_vm_pu.astype(float).tolist(),
+                mode="markers", name=name,
+                marker={"color": color, "symbol": symbol, "size": 8},
+                customdata=[hover[i] for i in indices], hovertemplate=hovertemplate,
+            ))
+    # Keep the same voltage scale while scrubbing through the selected day.
+    values = detail[["ground_truth_vm_pu", "predicted_vm_pu",
+                     "lower_95_vm_pu", "upper_95_vm_pu"]].to_numpy(float)
+    low, high = float(values.min()), float(values.max())
+    padding = max((high - low) * 0.08, 1e-5)
+    fig.update_layout(
+        title=f"All output buses — {frame['time'].iloc[0]} · step {int(time_step)}",
+        xaxis_title="SimBench bus", yaxis_title="Voltage magnitude [p.u.]",
+        height=660, margin={"l": 65, "r": 25, "t": 120, "b": 180},
+        legend={"orientation": "h", "y": 1.03, "yanchor": "bottom", "x": 0},
+    )
+    fig.update_xaxes(type="category", categoryorder="array", categoryarray=labels,
+                     tickmode="array", tickvals=labels, tickangle=-60, tickfont={"size": 10})
+    fig.update_yaxes(range=[low - padding, high + padding])
+    return fig
+
+
 def annual_day_bus_timeseries_figure(detail, bus):
     frame = detail[detail["bus"].astype(int) == int(bus)].copy()
     frame = frame.sort_values("time_step")
@@ -2538,7 +2617,6 @@ with main_tabs[0]:
     q3.metric("95% Coverage", f"{100 * selected_row['coverage_95']:.2f}%")
     q4.metric("Mean 95% PI Width", f"{selected_row['mean_interval_width_95_pu']:.8f} p.u.")
 
-    st.markdown("### Bus-wise State Estimation")
     try:
         raw_detail = load_annual_day_detail(
             str(annual_eval["run_dir"]), int(selected_day),
@@ -2551,6 +2629,42 @@ with main_tabs[0]:
     if detail.empty:
         st.warning("No verified state estimates available for this day and scope in the selected run.")
     else:
+        st.markdown("### All-Bus State Estimation at One Timestep")
+        step_table = raw_detail[["time_step", "time"]].drop_duplicates("time_step").sort_values("time_step")
+        steps = step_table.time_step.astype(int).tolist()
+        time_lookup = dict(zip(steps, step_table.time.astype(str)))
+        snapshot_context = f"{selected_annual_path}_{selected_day}"
+        snapshot_step = st.select_slider(
+            "All-bus 15-minute timestep", options=steps, value=steps[0],
+            format_func=lambda step: f"{time_lookup[int(step)]} · step {int(step)}",
+            key=f"daily_all_bus_step_{snapshot_context}",
+        )
+        st.caption(
+            f"{noise_label(annual_noise)} · Day {selected_day} · "
+            f"All {raw_detail.bus.nunique()} GPR output buses (measured + unmeasured). "
+            "Dots show GPR means; whiskers show the saved 95% predictive intervals (μ ± 1.96σ). "
+            "Diamonds show ground truth; red crosses mark ground truth outside the interval. "
+            "The voltage scale stays fixed for this day. The reference/slack bus has no GPR output."
+        )
+        dashboard_plotly_chart(annual_day_all_buses_figure(raw_detail, snapshot_step),
+                               width="stretch", key=f"all_bus_snapshot_{snapshot_context}")
+        with st.expander("All-bus values at the selected timestep"):
+            snapshot = raw_detail[raw_detail.time_step.astype(int).eq(int(snapshot_step))].copy()
+            snapshot = snapshot.set_index("bus").loc[bus_order_from_frame(raw_detail)].reset_index()
+            table = pd.DataFrame({
+                "SimBench Bus": snapshot.bus.map(frame_bus_label_lookup(raw_detail)),
+                "Bus Role": snapshot.bus_role,
+                "Ground Truth [p.u.]": snapshot.ground_truth_vm_pu,
+                "GPR Mean [p.u.]": snapshot.predicted_vm_pu,
+                "Lower 95% [p.u.]": snapshot.lower_95_vm_pu,
+                "Upper 95% [p.u.]": snapshot.upper_95_vm_pu,
+                "PI Width [p.u.]": snapshot.pi_width_pu,
+                "Absolute Error [p.u.]": snapshot.absolute_error_vm_pu,
+                "Ground Truth Inside 95% PI": snapshot.covered_95.map({True: "Yes", False: "No"}),
+            })
+            st.dataframe(table, hide_index=True, width="stretch")
+
+        st.markdown("### Bus-wise State Estimation")
         bus_options = bus_order_from_frame(raw_detail)
         detail_label_lookup = frame_bus_label_lookup(raw_detail)
         selected_bus = st.selectbox(
