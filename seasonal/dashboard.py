@@ -577,6 +577,22 @@ def load_annual_evaluation(path_string, modified=None):
     }
 
 
+def seasonal_bus_role_metrics(daily_bus):
+    """Pool each season/role over the saved bus-timestep estimates."""
+    rows = []
+    for (season, role), frame in daily_bus.groupby(["season", "bus_role"], sort=False):
+        counts = frame["n_timesteps"].to_numpy(float)
+        rows.append({
+            "season": season, "bus_role": role, "n_buses": int(frame.bus.nunique()),
+            "n_predictions": int(counts.sum()),
+            "mae_pu": float(np.average(frame.mae_pu, weights=counts)),
+            "rmse_pu": float(np.sqrt(np.average(frame.rmse_pu ** 2, weights=counts))),
+            "coverage_95": float(np.average(frame.coverage_95, weights=counts)),
+            "mean_interval_width_95_pu": float(np.average(frame.mean_interval_width_95_pu, weights=counts)),
+        })
+    return pd.DataFrame(rows)
+
+
 def evaluation_view(base, scope):
     """Return a lightweight scope-filtered view without recomputing predictions."""
     view = dict(base)
@@ -2450,11 +2466,27 @@ with main_tabs[1]:
         "without retraining anything."
     )
 
+    st.markdown("### Measured vs. unmeasured target buses")
     if winter_independent:
-        st.markdown("### Measured vs. unmeasured target buses")
         role_metrics = pd.read_csv(base_eval["run_dir"] / "bus_role_metrics.csv")
         dashboard_dataframe(friendly_table(role_metrics), hide_index=True, width="stretch")
         st.caption("Both groups are evaluated on the same winter test timesteps; each target uses the same input matrix.")
+    elif base_eval["daily_bus_all"].empty:
+        st.info("Per-season measured/unmeasured summaries require this run's saved daily_bus_metrics.csv.")
+    else:
+        role_metrics = seasonal_bus_role_metrics(base_eval["daily_bus_all"])
+        for season in annual_config.get("season_order", ["winter", "spring", "summer", "autumn"]):
+            season_metrics = role_metrics[role_metrics.season.eq(season)].drop(columns="season")
+            if not season_metrics.empty:
+                st.markdown(f"**{season.title()}**")
+                dashboard_dataframe(friendly_table(season_metrics), hide_index=True, width="stretch")
+        st.caption(
+            "Each table pools the saved test estimates from that season. Measured and unmeasured groups "
+            "use the same test timesteps and remain visible in both evaluation scopes. "
+            "Metrics are weighted by the number of bus-timestep estimates; RMSE is pooled from squared errors."
+        )
+
+    if winter_independent:
         st.markdown("### Independently optimized target-bus kernels")
         dashboard_dataframe(friendly_table(base_eval["kernel"]), hide_index=True, width="stretch")
 
