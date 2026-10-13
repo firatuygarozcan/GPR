@@ -851,15 +851,64 @@ def day_detail_signature(run_path, day):
                   for path in paths if path.exists()), noise)
 
 
+@st.cache_data(show_spinner=False)
+def dashboard_timeline(network):
+    """Authoritative local-clock labels, keyed by unique SimBench row position."""
+    timeline = dsse.build_simbench_timeline(load_dashboard_network(network))
+    dsse.validate_simbench_timeline(timeline)
+    return timeline
+
+
+def validate_day_grid(frame, day, cfg):
+    """Require every saved output bus at every physical step of the selected day."""
+    frame = frame.copy()
+    for column in ["bus", "time_step"]:
+        values = pd.to_numeric(frame[column], errors="raise").to_numpy(float)
+        if not np.isfinite(values).all() or not np.equal(values, np.floor(values)).all():
+            raise ValueError(f"Daily {column} identifiers must be finite integers.")
+        frame[column] = values.astype(int)
+    if frame.empty or frame.duplicated(["bus", "time_step"]).any():
+        raise ValueError("Daily data is empty or contains duplicate bus/timestep pairs.")
+    expected = dashboard_timeline(cfg["network"])
+    expected = expected[expected.day_of_year.eq(int(day))].set_index("simbench_step")
+    if expected.empty:
+        raise ValueError("Selected day is not in the SimBench timeline.")
+    predicted = set(map(int, cfg["prediction_buses"]))
+    identity = bus_identity_lookup(cfg)
+    names = [identity.get(bus, {}).get("simbench_name") for bus in predicted]
+    if (not predicted or any(not isinstance(name, str) or not name.strip() for name in names)
+            or len(set(names)) != len(names)):
+        raise ValueError("Saved output buses require complete, unique SimBench identity metadata.")
+    if predicted & set(map(int, cfg.get("reference_buses", []))):
+        raise ValueError("Reference buses cannot be GPR output buses.")
+    if set(frame.bus) != predicted:
+        raise ValueError("Daily data does not contain exactly the selected run's output buses.")
+    steps = set(expected.index)
+    if any(set(part.time_step) != steps for _, part in frame.groupby("bus")):
+        raise ValueError("Daily data is missing or has unexpected SimBench timesteps for an output bus.")
+    aligned = expected.loc[frame.time_step]
+    canonical = {
+        "simbench_step": frame.time_step.to_numpy(),
+        "timestamp": aligned.timestamp.to_numpy(),
+        "date": aligned.date.to_numpy(),
+        "day_of_year": aligned.day_of_year.to_numpy(),
+        "step_in_day": aligned.step_in_day.to_numpy(),
+        "time": aligned.timestamp.str[-5:].to_numpy(),
+    }
+    for column, values in canonical.items():
+        if column in frame and not np.array_equal(frame[column].to_numpy(), values):
+            raise ValueError(f"Daily {column} does not match the selected SimBench day/timestep.")
+        frame[column] = values
+    return frame
+
+
 def validate_day_detail(frame, day, cfg):
     required = ["time_step", "time", "bus", "ground_truth_vm_pu", "predicted_vm_pu",
                 "lower_95_vm_pu", "upper_95_vm_pu"]
     missing = [column for column in required if column not in frame]
     if missing:
         raise ValueError(f"Daily state-estimation data is missing columns: {missing}")
-    frame = frame.copy()
-    if frame.empty or frame.duplicated(["bus", "time_step"]).any():
-        raise ValueError("Daily data is empty or contains duplicate bus/timestep pairs.")
+    frame = validate_day_grid(frame, day, cfg)
     numbers = frame[["ground_truth_vm_pu", "predicted_vm_pu", "lower_95_vm_pu", "upper_95_vm_pu"]].to_numpy(float)
     if not np.isfinite(numbers).all() or np.any(numbers[:, 2] > numbers[:, 3]):
         raise ValueError("Daily voltage estimates or interval bounds are invalid.")
@@ -887,6 +936,7 @@ def validate_day_detail(frame, day, cfg):
         if name:
             frame.loc[part.index, "simbench_name"] = name
             frame.loc[part.index, "bus_label"] = name
+            frame.loc[part.index, "simbench_bus_number"] = identity[bus].get("simbench_bus_number")
         expected_role = "measured" if bus in measured else "unmeasured"
         if "bus_role" in part and not part.bus_role.eq(expected_role).all():
             raise ValueError(f"Measurement role mismatch for bus {bus}.")
@@ -1020,13 +1070,16 @@ def annual_day_heatmap_figure(detail, metric):
         colorbar = "PI width (p.u.)"
         hover_value = "%{z:.8f} p.u."
         colorscale = "Blues"
-    else:
+    elif metric == "Coverage Miss":
         column = "missed_95"
         frame[column] = (~frame["covered_95"].astype(bool)).astype(int)
         title = "15-Minute 95% Prediction-Interval Misses"
         colorbar = "Miss"
         hover_value = "%{z:.0f}"
-        colorscale = [[0.0, "#eef3f8"], [1.0, "#b2182b"]]
+        colorscale = [[0.0, "#eef3f8"], [0.5, "#eef3f8"],
+                      [0.5, "#b2182b"], [1.0, "#b2182b"]]
+    else:
+        raise ValueError(f"Unknown daily heatmap metric: {metric}")
 
     bus_order = bus_order_from_frame(frame)
     label_lookup = frame_bus_label_lookup(frame)
@@ -1035,7 +1088,7 @@ def annual_day_heatmap_figure(detail, metric):
     # unique on the autumn DST transition (02:00..02:45 occur twice), so pivoting
     # directly on `time` would merge/fail on exactly the day we must preserve.
     step_meta = (
-        frame[["time_step", "time"]]
+        frame[["time_step", "time", "timestamp", "date"]]
         .drop_duplicates("time_step")
         .sort_values("time_step")
     )
@@ -1043,27 +1096,37 @@ def annual_day_heatmap_figure(detail, metric):
     time_labels = step_meta["time"].astype(str).tolist()
     pivot = frame.pivot(index="bus", columns="time_step", values=column)
     pivot = pivot.reindex(index=bus_order, columns=step_order)
-    custom_time = np.tile(np.asarray(time_labels, dtype=object), (len(bus_order), 1))
+    ordered = frame.set_index(["bus", "time_step"]).loc[
+        pd.MultiIndex.from_product([bus_order, step_order])]
+    hover_columns = ["timestamp", "bus_role", "ground_truth_vm_pu", "predicted_vm_pu",
+                     "lower_95_vm_pu", "upper_95_vm_pu"]
+    custom = ordered[hover_columns].to_numpy(object).reshape(len(bus_order), len(step_order), -1).tolist()
+    colorbar_config = {"title": colorbar}
+    if metric == "Coverage Miss":
+        colorbar_config.update(tickvals=[0, 1], ticktext=["Inside PI (0)", "Outside PI (1)"])
 
     fig = go.Figure(
         go.Heatmap(
             z=pivot.to_numpy(float).tolist(),
             x=step_order,
             y=[label_lookup.get(bus, f"Internal bus {bus}") for bus in bus_order],
-            customdata=custom_time.tolist(),
+            customdata=custom,
             colorscale=colorscale,
             zmin=0 if metric == "Coverage Miss" else None,
             zmax=1 if metric == "Coverage Miss" else None,
-            colorbar={"title": colorbar},
+            colorbar=colorbar_config,
             hovertemplate=(
-                "Time %{customdata}<br>SimBench step %{x}<br>%{y}<br>"
+                "Local date/time %{customdata[0]}<br>SimBench step %{x}<br>%{y}<br>"
+                "Role: %{customdata[1]}<br>Ground truth: %{customdata[2]:.8f} p.u.<br>"
+                "GPR mean: %{customdata[3]:.8f} p.u.<br>"
+                "95% PI: [%{customdata[4]:.8f}, %{customdata[5]:.8f}] p.u.<br>"
                 + metric + " " + hover_value + "<extra></extra>"
             ),
         )
     )
     fig.update_layout(
-        title=title,
-        xaxis_title="Time of day",
+        title=f"{title} — {step_meta.date.iloc[0]} · {len(step_order)} timesteps",
+        xaxis_title="Local time of day (repeated DST times are separate steps)",
         yaxis_title="SimBench bus",
         height=max(560, 19 * len(bus_order) + 170),
         margin={"l": 90, "r": 35, "t": 75, "b": 65},
@@ -1072,6 +1135,7 @@ def annual_day_heatmap_figure(detail, metric):
         tickmode="array",
         tickvals=step_order[::4],
         ticktext=time_labels[::4],
+        type="linear",
     )
     return fig
 
@@ -2729,7 +2793,9 @@ with main_tabs[0]:
         )
         st.caption(
             f"{noise_label(annual_noise)} · Day {selected_day} · {SCOPE_LABELS[selected_scope]} · "
-            "Heatmap includes only the selected metric scope; the state-estimation selector includes all GPR output buses."
+            "Heatmap includes only the selected metric scope; the state-estimation selector includes all GPR output buses. "
+            "Coverage Miss: 0 = ground truth inside the 95% PI (including bounds); 1 = outside. "
+            "Local-clock repeats on the autumn DST day remain separate SimBench steps."
         )
         column = {"Absolute Error": "absolute_error_vm_pu", "95% PI Width": "pi_width_pu"}.get(drill_metric)
         if column:
