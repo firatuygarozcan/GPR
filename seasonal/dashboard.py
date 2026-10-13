@@ -70,6 +70,16 @@ def format_metric(value, unit=""):
     return f"{float(value):.8f}{unit}"
 
 
+def dashboard_dataframe(frame, **kwargs):
+    """Show floating-point table values with six decimals; keep data numeric."""
+    columns = {
+        column: st.column_config.NumberColumn(format="%.6f")
+        for column in frame.select_dtypes(include="floating").columns
+    }
+    columns.update(kwargs.pop("column_config", {}))
+    st.dataframe(frame, column_config=columns, **kwargs)
+
+
 def dashboard_plotly_chart(figure, **kwargs):
     """Send ordinary JSON arrays, including to older Streamlit Plotly clients."""
     if "width" in kwargs and "width" not in inspect.signature(st.plotly_chart).parameters:
@@ -2433,7 +2443,7 @@ with main_tabs[1]:
         "coverage_percent",
         "voltage_mean_interval_width_95_pu",
     ]
-    st.dataframe(friendly_table(scope_compare[cols]), hide_index=True, width="stretch")
+    dashboard_dataframe(friendly_table(scope_compare[cols]), hide_index=True, width="stretch")
     st.caption(
         "The second row uses exactly the same predictions and models; only the buses included "
         "in the metric calculation change. This makes the influence of measured buses visible "
@@ -2443,10 +2453,10 @@ with main_tabs[1]:
     if winter_independent:
         st.markdown("### Measured vs. unmeasured target buses")
         role_metrics = pd.read_csv(base_eval["run_dir"] / "bus_role_metrics.csv")
-        st.dataframe(friendly_table(role_metrics), hide_index=True, width="stretch")
+        dashboard_dataframe(friendly_table(role_metrics), hide_index=True, width="stretch")
         st.caption("Both groups are evaluated on the same winter test timesteps; each target uses the same input matrix.")
         st.markdown("### Independently optimized target-bus kernels")
-        st.dataframe(friendly_table(base_eval["kernel"]), hide_index=True, width="stretch")
+        dashboard_dataframe(friendly_table(base_eval["kernel"]), hide_index=True, width="stretch")
 
     st.markdown("### Season-specific results")
     seasonal_display = annual_eval["seasonal"].copy()
@@ -2462,7 +2472,7 @@ with main_tabs[1]:
         "fit_time_seconds",
         "prediction_time_seconds",
     ]
-    st.dataframe(
+    dashboard_dataframe(
         friendly_table(seasonal_display[[c for c in seasonal_cols if c in seasonal_display.columns]]),
         hide_index=True,
         width="stretch",
@@ -2559,7 +2569,7 @@ with main_tabs[1]:
             )
         bus_table = annual_eval["buses"].copy()
         bus_table["coverage_percent"] = 100.0 * bus_table["coverage_95"]
-        st.dataframe(
+        dashboard_dataframe(
             friendly_table(hide_internal_bus_columns(bus_table.drop(columns=["coverage_95"], errors="ignore"))),
             hide_index=True,
             width="stretch",
@@ -2577,10 +2587,10 @@ with main_tabs[1]:
                     "n_test_days": int((base_eval["test_days_frame"]["season"] == season).sum()),
                 }
             )
-        st.dataframe(pd.DataFrame(grouped), hide_index=True, width="stretch")
+        dashboard_dataframe(pd.DataFrame(grouped), hide_index=True, width="stretch")
         if not base_eval["kernel"].empty:
             st.markdown("**Fitted kernel per season**")
-            st.dataframe(friendly_table(base_eval["kernel"]), hide_index=True, width="stretch")
+            dashboard_dataframe(friendly_table(base_eval["kernel"]), hide_index=True, width="stretch")
         st.caption(f"Result directory: {base_eval['run_dir']}")
 
 # -----------------------------------------------------------------------------
@@ -2662,7 +2672,7 @@ with main_tabs[0]:
                 "Absolute Error [p.u.]": snapshot.absolute_error_vm_pu,
                 "Ground Truth Inside 95% PI": snapshot.covered_95.map({True: "Yes", False: "No"}),
             })
-            st.dataframe(table, hide_index=True, width="stretch")
+            dashboard_dataframe(table, hide_index=True, width="stretch")
 
         st.markdown("### Bus-wise State Estimation")
         bus_options = bus_order_from_frame(raw_detail)
@@ -2701,7 +2711,7 @@ with main_tabs[0]:
         st.markdown("**Worst 15 test days by RMSE**")
         worst = daily.nlargest(15, "rmse_pu").copy()
         worst["coverage_percent"] = 100.0 * worst["coverage_95"]
-        st.dataframe(
+        dashboard_dataframe(
             friendly_table(worst[["season", "day", "mae_pu", "rmse_pu", "coverage_percent", "mean_interval_width_95_pu"]]),
             hide_index=True,
             width="stretch",
@@ -2710,7 +2720,7 @@ with main_tabs[0]:
         st.markdown("**Lowest 15 test days by coverage**")
         low = daily.nsmallest(15, "coverage_95").copy()
         low["coverage_percent"] = 100.0 * low["coverage_95"]
-        st.dataframe(
+        dashboard_dataframe(
             friendly_table(low[["season", "day", "mae_pu", "rmse_pu", "coverage_percent", "mean_interval_width_95_pu"]]),
             hide_index=True,
             width="stretch",
@@ -2864,7 +2874,7 @@ with main_tabs[2]:
         bus_summary["bus_label"] = bus_summary["bus"].astype(int).map(
             lambda bus: live_bus_label(dashboard_net, bus)
         )
-        st.dataframe(
+        dashboard_dataframe(
             friendly_table(hide_internal_bus_columns(bus_summary)),
             hide_index=True,
             width="stretch",
@@ -2875,7 +2885,7 @@ with main_tabs[2]:
             load_display["bus_label"] = load_display["bus"].astype(int).map(
                 lambda bus: live_bus_label(dashboard_net, bus)
             )
-            st.dataframe(
+            dashboard_dataframe(
                 friendly_table(hide_internal_bus_columns(load_display)),
                 hide_index=True,
                 width="stretch",
@@ -2886,7 +2896,7 @@ with main_tabs[2]:
             generator_display["bus_label"] = generator_display["bus"].astype(int).map(
                 lambda bus: live_bus_label(dashboard_net, bus)
             )
-            st.dataframe(
+            dashboard_dataframe(
                 friendly_table(hide_internal_bus_columns(generator_display)),
                 hide_index=True,
                 width="stretch",
@@ -2902,7 +2912,7 @@ with main_tabs[2]:
                 trafo_display["lv_bus"] = trafo_display["lv_bus"].astype(int).map(
                     lambda bus: live_bus_label(dashboard_net, bus)
                 )
-            st.dataframe(friendly_table(trafo_display), hide_index=True, width="stretch")
+            dashboard_dataframe(friendly_table(trafo_display), hide_index=True, width="stretch")
 
 # -----------------------------------------------------------------------------
 # Tab 4: Stress cases
@@ -2926,7 +2936,7 @@ with main_tabs[3]:
         if stress_run is not None and not stress_run["summary"].empty:
             seen_lookup = stress_run["summary"].set_index("case")["seen_in_training"].to_dict()
             case_table["seen_in_training"] = case_table["case"].map(seen_lookup).fillna(False)
-        st.dataframe(
+        dashboard_dataframe(
             friendly_table(case_table[[c for c in ["case", "season", "day", "time", "time_step", "seen_in_training"] if c in case_table.columns]]),
             hide_index=True,
             width="stretch",
@@ -2967,7 +2977,7 @@ with main_tabs[3]:
                     "voltage_mae_pu", "voltage_rmse_pu", "coverage_percent",
                     "voltage_mean_interval_width_95_pu",
                 ]
-                st.dataframe(friendly_table(display[cols]), hide_index=True, width="stretch")
+                dashboard_dataframe(friendly_table(display[cols]), hide_index=True, width="stretch")
 
 # -----------------------------------------------------------------------------
 # Tab 5: Kernel diagnostics
