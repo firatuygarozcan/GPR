@@ -1259,6 +1259,21 @@ def annual_day_all_buses_figure(detail, time_step):
     return fig
 
 
+def bus_day_metrics(detail, bus):
+    """Summarize only the selected bus over the displayed day's physical steps."""
+    frame = detail[detail.bus.astype(int).eq(int(bus))]
+    if frame.empty:
+        raise ValueError(f"No daily state-estimation data for selected bus {bus}.")
+    error = frame.predicted_vm_pu - frame.ground_truth_vm_pu
+    return {
+        "n_timesteps": len(frame),
+        "mae_pu": float(np.abs(error).mean()),
+        "rmse_pu": float(np.sqrt(np.mean(error**2))),
+        "coverage_95": float(frame.covered_95.mean()),
+        "mean_interval_width_95_pu": float(frame.pi_width_pu.mean()),
+    }
+
+
 def annual_day_bus_timeseries_figure(detail, bus, noisy_measurements=None):
     frame = detail[detail["bus"].astype(int) == int(bus)].copy()
     frame = frame.sort_values("time_step")
@@ -2824,18 +2839,29 @@ with main_tabs[0]:
             dashboard_dataframe(table, hide_index=True, width="stretch")
 
         st.markdown("### Bus-wise State Estimation")
-        bus_options = bus_order_from_frame(raw_detail)
-        detail_label_lookup = frame_bus_label_lookup(raw_detail)
+        bus_options = bus_order_from_frame(detail)
+        detail_label_lookup = frame_bus_label_lookup(detail)
         selected_bus = st.selectbox(
             "Bus state estimation", bus_options,
             format_func=lambda bus: detail_label_lookup.get(int(bus), bus_display_label(annual_config, bus)),
-            index=bus_options.index(bus_order_from_frame(detail)[0]), key="daily_bus",
+            index=0, key=f"daily_bus_{selected_annual_path}_{selected_scope}",
         )
-        role = raw_detail.loc[raw_detail.bus.astype(int).eq(int(selected_bus)), "bus_role"].iloc[0]
+        role = detail.loc[detail.bus.astype(int).eq(int(selected_bus)), "bus_role"].iloc[0]
         st.caption(
             f"{noise_label(annual_noise)} · {str(selected_row['season']).title()} GPR · "
             f"Day {selected_day} · {role} bus · {raw_detail.attrs.get('detail_source', 'Saved results')}"
         )
+        bus_metrics = bus_day_metrics(detail, selected_bus)
+        st.caption(
+            f"Selected bus metrics · {detail_label_lookup[int(selected_bus)]} · "
+            f"Day {selected_day} · {bus_metrics['n_timesteps']} timesteps. "
+            "These values summarize this bus only."
+        )
+        b1, b2, b3, b4 = st.columns(4)
+        b1.metric("Bus MAE", f"{bus_metrics['mae_pu']:.8f} p.u.")
+        b2.metric("Bus RMSE", f"{bus_metrics['rmse_pu']:.8f} p.u.")
+        b3.metric("Bus 95% Coverage", f"{100 * bus_metrics['coverage_95']:.2f}%")
+        b4.metric("Bus Mean 95% PI Width", f"{bus_metrics['mean_interval_width_95_pu']:.8f} p.u.")
         chart_context = f"{selected_annual_path}_{selected_scope}_{selected_day}"
         noisy_measurements = None
         if annual_noise is True and role == "measured":
@@ -2849,7 +2875,7 @@ with main_tabs[0]:
                                "Reconstructed using the day-specific seed and checked against the saved predictions.")
             except (OSError, ValueError, RuntimeError, KeyError) as exc:
                 st.warning(f"Noisy measurement overlay could not be verified: {exc}")
-        dashboard_plotly_chart(annual_day_bus_timeseries_figure(raw_detail, selected_bus, noisy_measurements), width="stretch",
+        dashboard_plotly_chart(annual_day_bus_timeseries_figure(detail, selected_bus, noisy_measurements), width="stretch",
                         key=f"state_estimation_{chart_context}_{selected_bus}")
         st.markdown("### 15-Minute Heatmap")
         drill_metric = st.radio(
@@ -2858,7 +2884,7 @@ with main_tabs[0]:
         )
         st.caption(
             f"{noise_label(annual_noise)} · Day {selected_day} · {SCOPE_LABELS[selected_scope]} · "
-            "Heatmap includes only the selected metric scope; the state-estimation selector includes all GPR output buses. "
+            "Heatmap and bus-wise state-estimation selector both follow the selected metric scope. "
             "Coverage Miss: 0 = ground truth inside the 95% PI (including bounds); 1 = outside. "
             "Local-clock repeats on the autumn DST day remain separate SimBench steps."
         )
