@@ -1004,7 +1004,8 @@ def recover_day_detail(run_path, day, cfg):
         raise ValueError("Ground-truth bus identity is incompatible; dashboard will not rewrite it.")
     truth = dsse.load_ground_truth(net, network, [int(day)])
     X, Y, meta, targets, _ = dsse.build_voltage_dataset(
-        truth, cfg["measured_buses"], [int(b) for b in net.bus.index], cfg["reference_buses"])
+        truth, cfg["measured_buses"], [int(b) for b in net.bus.index], cfg["reference_buses"],
+        measurements=cfg.get("measurements", dsse.MEASUREMENTS))
     if targets != list(map(int, cfg["prediction_buses"])):
         raise ValueError("Saved GPR target ordering differs from the ground truth.")
     if cfg.get("use_measurement_noise") is True:
@@ -1034,8 +1035,47 @@ def recover_day_detail(run_path, day, cfg):
     # Old runs did not save noise parameters/seeds. Accept reconstruction only
     # when its metrics reproduce the saved run, not merely the current config.
     verify_day_metrics(frame, run_path, day)
+    if cfg.get("use_measurement_noise") is True:
+        frame = attach_noisy_voltage_measurements(frame, X, cfg)
     frame.attrs["detail_source"] = "Verified prediction from saved seasonal GPR (daily CSV missing)"
     return frame
+
+
+def attach_noisy_voltage_measurements(frame, inputs, cfg):
+    """Use the actual noisy input matrix; retain its bus and timestep keys."""
+    frame = frame.copy()
+    frame["noisy_measurement_vm_pu"] = np.nan
+    if cfg.get("use_measurement_noise") is True:
+        for bus in cfg["measured_buses"]:
+            column = f"bus_{int(bus)}_vm_pu"
+            if column not in inputs:
+                continue  # This experiment did not measure voltage at this bus.
+            mask = frame.bus.eq(int(bus))
+            frame.loc[mask, "noisy_measurement_vm_pu"] = frame.loc[mask, "time_step"].map(inputs[column])
+            if not np.isfinite(frame.loc[mask, "noisy_measurement_vm_pu"]).all():
+                raise ValueError("Noisy voltage measurements are missing for a displayed timestep.")
+    return frame
+
+
+@st.cache_data(show_spinner=False)
+def load_day_noisy_measurements(run_path, day, modified=None):
+    """Reconstruct inputs only when the saved model reproduces the selected run."""
+    with (Path(run_path) / "run_config.json").open(encoding="utf-8") as file:
+        cfg = json.load(file)
+    if cfg.get("use_measurement_noise") is not True:
+        return pd.DataFrame()
+    saved = load_annual_day_detail(run_path, day, modified)
+    rebuilt = recover_day_detail(run_path, day, cfg)
+    columns = ["ground_truth_vm_pu", "predicted_vm_pu", "lower_95_vm_pu", "upper_95_vm_pu"]
+    keys = ["bus", "time_step"]
+    saved = saved.set_index(keys).sort_index()
+    rebuilt = rebuilt.set_index(keys).sort_index()
+    if (not saved.index.equals(rebuilt.index)
+            or not np.allclose(saved[columns].to_numpy(float), rebuilt[columns].to_numpy(float),
+                               rtol=1e-9, atol=1e-10)):
+        raise ValueError("Reconstructed inputs do not reproduce this run's saved state estimates. "
+                         "The original noise settings and saved models are required.")
+    return rebuilt.reset_index()[["bus", "time_step", "noisy_measurement_vm_pu"]]
 
 
 @st.cache_data(show_spinner=False)
@@ -1219,7 +1259,7 @@ def annual_day_all_buses_figure(detail, time_step):
     return fig
 
 
-def annual_day_bus_timeseries_figure(detail, bus):
+def annual_day_bus_timeseries_figure(detail, bus, noisy_measurements=None):
     frame = detail[detail["bus"].astype(int) == int(bus)].copy()
     frame = frame.sort_values("time_step")
     if frame.empty:
@@ -1275,6 +1315,19 @@ def annual_day_bus_timeseries_figure(detail, bus):
             hovertemplate="Time %{customdata[0]}<br>SimBench step %{x}<br>V %{y:.8f} p.u.<extra></extra>",
         )
     )
+    if (noisy_measurements is not None and not noisy_measurements.empty
+            and frame.bus_role.eq("measured").all()):
+        measured = noisy_measurements[noisy_measurements.bus.eq(int(bus))]
+        measured = measured.set_index("time_step").reindex(x)
+        values = measured.noisy_measurement_vm_pu.to_numpy(float)
+        if np.isfinite(values).all():
+            fig.add_trace(go.Scatter(
+                x=x, y=values.tolist(), customdata=hover, mode="markers",
+                name="Noisy voltage measurement (model input)",
+                marker={"color": "#d62728", "size": 5, "symbol": "circle"},
+                hovertemplate="Time %{customdata[0]}<br>SimBench step %{x}<br>"
+                              "Noisy measurement %{y:.8f} p.u.<extra></extra>",
+            ))
     label_lookup = frame_bus_label_lookup(frame)
     display_bus = label_lookup.get(int(bus), f"Internal bus {int(bus)}")
     fig.update_layout(
@@ -2784,7 +2837,19 @@ with main_tabs[0]:
             f"Day {selected_day} · {role} bus · {raw_detail.attrs.get('detail_source', 'Saved results')}"
         )
         chart_context = f"{selected_annual_path}_{selected_scope}_{selected_day}"
-        dashboard_plotly_chart(annual_day_bus_timeseries_figure(raw_detail, selected_bus), width="stretch",
+        noisy_measurements = None
+        if annual_noise is True and role == "measured":
+            try:
+                noisy_measurements = load_day_noisy_measurements(
+                    str(annual_eval["run_dir"]), int(selected_day),
+                    day_detail_signature(annual_eval["run_dir"], selected_day))
+                if noisy_measurements.loc[noisy_measurements.bus.eq(int(selected_bus)),
+                                          "noisy_measurement_vm_pu"].notna().any():
+                    st.caption("Red dots: noisy voltage measurements supplied to the GPR before scaling. "
+                               "Reconstructed using the day-specific seed and checked against the saved predictions.")
+            except (OSError, ValueError, RuntimeError, KeyError) as exc:
+                st.warning(f"Noisy measurement overlay could not be verified: {exc}")
+        dashboard_plotly_chart(annual_day_bus_timeseries_figure(raw_detail, selected_bus, noisy_measurements), width="stretch",
                         key=f"state_estimation_{chart_context}_{selected_bus}")
         st.markdown("### 15-Minute Heatmap")
         drill_metric = st.radio(

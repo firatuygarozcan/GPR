@@ -10,6 +10,9 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+from unittest.mock import Mock, patch
+from types import SimpleNamespace
+import joblib
 
 import numpy as np
 import pandas as pd
@@ -18,6 +21,7 @@ import plotly.graph_objects as go
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'seasonal'))
 import dsse
+import config as pipeline_config
 from config import NETWORK
 from seasonal_evaluation import save_daily_diagnostics, PRIMARY_SCOPE, ALL_SCOPE
 
@@ -28,13 +32,16 @@ def dashboard_helpers():
         'validate_day_grid', 'validate_day_detail', 'filter_detail_scope',
         'verify_day_metrics', 'annual_day_heatmap_figure',
         'annual_day_all_buses_figure', 'annual_day_bus_timeseries_figure',
+        'attach_noisy_voltage_measurements', 'load_day_noisy_measurements',
+        'recover_day_detail', 'selected_run_file',
     }
     source = ast.parse((ROOT / 'seasonal/dashboard.py').read_text())
     definitions = [node for node in source.body if isinstance(node, ast.FunctionDef) and node.name in names]
     assert {node.name for node in definitions} == names
     for node in definitions:
         node.decorator_list = []
-    namespace = dict(np=np, pd=pd, go=go, Path=Path, dsse=dsse,
+    namespace = dict(np=np, pd=pd, go=go, Path=Path, dsse=dsse, json=json,
+                     joblib=joblib, pipeline_config=pipeline_config, WINTER_MODEL_TYPE="winter",
                      season_for_day=dsse.season_for_day,
                      PRIMARY_SCOPE=PRIMARY_SCOPE, ALL_SCOPE=ALL_SCOPE)
     exec(compile(ast.Module(body=definitions, type_ignores=[]), str(ROOT / 'seasonal/dashboard.py'), 'exec'), namespace)
@@ -236,6 +243,7 @@ class DailyHeatmapTests(unittest.TestCase):
             'dashboard_timeline', 'load_dashboard_network', 'validate_day_grid',
             'validate_day_detail', 'bus_identity_lookup', 'bus_order_from_frame',
             'frame_bus_label_lookup', 'annual_day_heatmap_figure', 'dashboard_plotly_chart',
+            'annual_day_bus_timeseries_figure', 'attach_noisy_voltage_measurements',
         }
         source = (ROOT / 'seasonal/dashboard.py').read_text()
         definitions = [ast.get_source_segment(source, node) for node in ast.parse(source).body
@@ -256,6 +264,13 @@ class DailyHeatmapTests(unittest.TestCase):
             script += f'detail = validate_day_detail(pd.read_csv({directory!r} + "/" + str(day) + ".csv"), day, cfg)\n'
             script += 'metric = st.radio("Metric", ["Absolute Error", "95% PI Width", "Coverage Miss"])\n'
             script += 'dashboard_plotly_chart(annual_day_heatmap_figure(detail, metric), width="stretch")\n'
+            script += 'cfg["use_measurement_noise"] = True\n'
+            script += 'bus = cfg["measured_buses"][0]\n'
+            script += 'part = detail[detail.bus.eq(bus)].sort_values("time_step")\n'
+            script += 'clean = pd.DataFrame({f"bus_{bus}_p_mw": .003, f"bus_{bus}_q_mvar": .001, f"bus_{bus}_vm_pu": part.ground_truth_vm_pu.to_numpy()}, index=part.time_step)\n'
+            script += 'noisy = dsse.add_measurement_noise(clean, dsse.day_noise_seed(8001, day))\n'
+            script += 'measurements = attach_noisy_voltage_measurements(detail, noisy, cfg)\n'
+            script += 'dashboard_plotly_chart(annual_day_bus_timeseries_figure(detail, bus, measurements), width="stretch")\n'
             app = AppTest.from_string(script).run(timeout=60)
             self.assertFalse(app.exception)
             for day, count in [(87, 92), (304, 100)]:
@@ -270,6 +285,123 @@ class DailyHeatmapTests(unittest.TestCase):
                         self.assertEqual(len(trace['x']), count)
                         self.assertEqual(np.asarray(trace['z']).shape, (3, count))
                         self.assertEqual(np.asarray(trace['customdata']).shape, (3, count, 6))
+                        overlay = json.loads(app.get('plotly_chart')[1].proto.spec)['data'][-1]
+                        self.assertEqual(overlay['mode'], 'markers')
+                        self.assertEqual(overlay['marker']['color'], '#d62728')
+                        self.assertEqual(len(overlay['x']), count)
+                        self.assertEqual(len(overlay['y']), count)
+
+    def noisy_inputs(self, day, cfg):
+        frame = self.fixture(day)
+        steps = sorted(frame.time_step.unique())
+        clean = pd.DataFrame(index=steps)
+        for bus in cfg['measured_buses']:
+            clean[f'bus_{bus}_p_mw'] = np.linspace(.001, .005, len(steps))
+            clean[f'bus_{bus}_q_mvar'] = np.linspace(.002, .007, len(steps))
+            clean[f'bus_{bus}_vm_pu'] = frame[frame.bus.eq(bus)].set_index('time_step').loc[steps].ground_truth_vm_pu
+        meta = pd.DataFrame({'day': day}, index=steps)
+        return dsse.add_noise_by_day(clean, meta, pipeline_config.TEST_NOISE_SEED)
+
+    def test_noisy_points_match_full_pipeline_inputs_and_dst_steps(self):
+        cfg = dict(self.cfg, use_measurement_noise=True, measured_buses=self.buses[:2][::-1])
+        for day, count in [(1, 96), (87, 92), (304, 100)]:
+            detail = self.helpers['validate_day_detail'](self.fixture(day), day, cfg)
+            inputs = self.noisy_inputs(day, cfg)
+            measurements = self.helpers['attach_noisy_voltage_measurements'](
+                detail.sample(frac=1, random_state=12), inputs, cfg)
+            for bus in cfg['measured_buses']:
+                figure = self.helpers['annual_day_bus_timeseries_figure'](detail, bus, measurements)
+                original = self.helpers['annual_day_bus_timeseries_figure'](detail, bus)
+                self.assertEqual(len(figure.data), len(original.data) + 1)
+                for before, after in zip(original.data, figure.data):
+                    self.assertEqual(before.to_plotly_json(), after.to_plotly_json())
+                points = figure.data[-1]
+                self.assertEqual(points.mode, 'markers')
+                self.assertEqual(points.marker.color, '#d62728')
+                self.assertEqual(len(points.x), count)
+                self.assertEqual(list(points.x), inputs.index.tolist())
+                np.testing.assert_array_equal(points.y, inputs[f'bus_{bus}_vm_pu'])
+            unmeasured = self.buses[-1]
+            self.assertEqual(len(self.helpers['annual_day_bus_timeseries_figure'](detail, unmeasured, measurements).data), 4)
+            self.assertTrue(measurements[measurements.bus.eq(unmeasured)].noisy_measurement_vm_pu.isna().all())
+
+    def test_clean_experiment_and_missing_voltage_do_not_add_points(self):
+        detail = self.validate(self.fixture(1), 1)
+        inputs = self.noisy_inputs(1, self.cfg)
+        for cfg, matrix in [(dict(self.cfg, use_measurement_noise=False), inputs),
+                            (dict(self.cfg, use_measurement_noise=True), inputs.filter(regex='_p_mw$'))]:
+            measurements = self.helpers['attach_noisy_voltage_measurements'](detail, matrix, cfg)
+            self.assertEqual(len(self.helpers['annual_day_bus_timeseries_figure'](detail, self.buses[0], measurements).data), 4)
+        with self.assertRaises(ValueError):
+            self.helpers['attach_noisy_voltage_measurements'](detail, inputs.iloc[1:], dict(self.cfg, use_measurement_noise=True))
+
+    def test_noisy_overlay_requires_matching_saved_predictions(self):
+        detail = self.validate(self.fixture(1), 1)
+        rebuilt = self.helpers['attach_noisy_voltage_measurements'](
+            detail, self.noisy_inputs(1, self.cfg), dict(self.cfg, use_measurement_noise=True))
+        with tempfile.TemporaryDirectory() as directory:
+            (Path(directory) / 'run_config.json').write_text(json.dumps(dict(self.cfg, use_measurement_noise=True)))
+            with patch.dict(self.helpers, load_annual_day_detail=Mock(return_value=detail),
+                            recover_day_detail=Mock(return_value=rebuilt)):
+                result = self.helpers['load_day_noisy_measurements'](directory, 1, 'signature')
+                self.assertEqual(len(result), len(detail))
+                self.helpers['load_annual_day_detail'].assert_called_once_with(directory, 1, 'signature')
+            for column in ['ground_truth_vm_pu', 'predicted_vm_pu', 'lower_95_vm_pu', 'upper_95_vm_pu']:
+                changed = rebuilt.copy()
+                changed.loc[0, column] += .01
+                with patch.dict(self.helpers, load_annual_day_detail=Mock(return_value=detail),
+                                recover_day_detail=Mock(return_value=changed)):
+                    with self.assertRaises(ValueError):
+                        self.helpers['load_day_noisy_measurements'](directory, 1)
+            (Path(directory) / 'run_config.json').write_text(json.dumps(dict(self.cfg, use_measurement_noise=False)))
+            with patch.dict(self.helpers, recover_day_detail=Mock(side_effect=AssertionError('must not load models'))):
+                self.assertTrue(self.helpers['load_day_noisy_measurements'](directory, 1).empty)
+
+    def test_recovery_reuses_exact_pipeline_noise_without_fitting(self):
+        day = 304
+        buses = self.buses + self.cfg['reference_buses']
+        identities = [row for row in self.cfg['bus_identity'] if row['internal_bus'] in buses]
+        cfg = dict(self.cfg, use_measurement_noise=True, bus_identity=identities,
+                   measured_buses=self.buses[:2][::-1], measurements=['p_mw', 'q_mvar', 'vm_pu'])
+        net = SimpleNamespace(bus=pd.DataFrame({'name': [row['simbench_name'] for row in identities]},
+                                               index=[row['internal_bus'] for row in identities]))
+        truth = self.fixture(day)
+        reference = truth[truth.bus.eq(self.buses[0])].copy()
+        reference['bus'] = self.cfg['reference_buses'][0]
+        truth = pd.concat([truth, reference], ignore_index=True)
+        truth['vm_pu'] = truth.ground_truth_vm_pu
+        truth['p_mw'] = .003
+        truth['q_mvar'] = .001
+        truth['va_degree'] = 0.
+        truth['day'] = day
+        clean, Y, meta, targets, _ = dsse.build_voltage_dataset(truth, cfg['measured_buses'], net.bus.index, cfg['reference_buses'])
+        cfg['prediction_buses'] = targets
+        expected = dsse.add_noise_by_day(clean, meta, pipeline_config.TEST_NOISE_SEED)
+        sigma = pd.DataFrame(.001, index=Y.index, columns=Y.columns)
+        model = Mock(target_columns=Y.columns.tolist())
+        model.predict.return_value = (Y, sigma)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / 'network'
+            run = root / 'seasonal' / 'run'
+            run.mkdir(parents=True)
+            (run / 'trained_gpr_autumn.joblib').touch()
+            cache = root / 'ground_truth' / 'schema'
+            cache.mkdir(parents=True)
+            identity_file = cache / 'bus_identity.csv'
+            pd.DataFrame(identities).to_csv(identity_file, index=False)
+            with patch.dict(self.helpers, load_dashboard_network=Mock(return_value=net),
+                            verify_day_metrics=Mock()), \
+                    patch.object(dsse, 'ground_truth_paths', return_value={'directory': cache, 'bus_identity': identity_file}), \
+                    patch.object(dsse, '_cached_ground_truth_report', return_value={'valid': True}), \
+                    patch.object(dsse, 'build_simbench_timeline', return_value=self.timeline), \
+                    patch.object(dsse, 'load_ground_truth', return_value=truth), \
+                    patch.object(joblib, 'load', return_value=model):
+                result = self.helpers['recover_day_detail'](str(run), day, cfg)
+                model.fit.assert_not_called()
+                pd.testing.assert_frame_equal(model.predict.call_args.args[0], expected)
+                for bus in cfg['measured_buses']:
+                    part = result[result.bus.eq(bus)].set_index('time_step')
+                    np.testing.assert_array_equal(part.noisy_measurement_vm_pu, expected[f'bus_{bus}_vm_pu'])
 
     def test_unknown_metric_rejected(self):
         with self.assertRaises(ValueError):
