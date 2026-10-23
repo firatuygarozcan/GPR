@@ -1,0 +1,31 @@
+{
+  "sample_only": true,
+  "n_training_points": 48,
+  "noise_before_scaling": true,
+  "channels": [
+    {
+      "feature": "bus_2_p_mw",
+      "clean_training_std": 0.0,
+      "noisy_training_std": 9.749355399331246e-07,
+      "standardized_noisy_training_std": 1.0
+    },
+    {
+      "feature": "bus_2_q_mvar",
+      "clean_training_std": 0.0,
+      "noisy_training_std": 1.119420351988712e-06,
+      "standardized_noisy_training_std": 1.0
+    },
+    {
+      "feature": "bus_15_p_mw",
+      "clean_training_std": 0.0,
+      "noisy_training_std": 1.0940524644613305e-06,
+      "standardized_noisy_training_std": 1.0
+    },
+    {
+      "feature": "bus_15_q_mvar",
+      "clean_training_std": 0.0,
+      "noisy_training_std": 1.1605398665026062e-06,
+      "standardized_noisy_training_std": 1.0
+    }
+  ]
+}

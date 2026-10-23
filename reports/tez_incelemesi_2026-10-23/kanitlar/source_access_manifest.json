@@ -1,0 +1,485 @@
+[
+  {
+    "name": "corr_ieee",
+    "url": "https://ieeexplore.ieee.org/document/11482821/",
+    "final_url": "https://ieeexplore.ieee.org/document/11482821/",
+    "status": 202,
+    "type": "text/html; charset=UTF-8",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "corr_google",
+    "url": "https://www.google.com/search?q=%22Distribution%20System%20State%20Estimation%20by%20Correlated%20Gaussian%20Processes%22",
+    "final_url": "https://www.google.com/search?q=%22Distribution%20System%20State%20Estimation%20by%20Correlated%20Gaussian%20Processes%22",
+    "status": 200,
+    "type": "text/html; charset=UTF-8",
+    "bytes": 93174,
+    "sha256": "ba46aa1fda3d938581d1369d193575c4b887423a2e70186e00ac009e8de66f7e"
+  },
+  {
+    "name": "corr_bing",
+    "url": "https://www.bing.com/search?q=%22Distribution%20System%20State%20Estimation%20by%20Correlated%20Gaussian%20Processes%22%20pdf",
+    "final_url": "https://www.bing.com/search?q=%22Distribution%20System%20State%20Estimation%20by%20Correlated%20Gaussian%20Processes%22%20pdf",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "bytes": 253969,
+    "sha256": "cb1ccabbb7234b30725ffe1a5b5763ba88305cd394f09d2e38975284646b8439"
+  },
+  {
+    "name": "physics_google",
+    "url": "https://www.google.com/search?q=%22physics%20informed%22%20%22Gaussian%20process%22%20%22power%20grids%22",
+    "final_url": "https://www.google.com/search?q=%22physics%20informed%22%20%22Gaussian%20process%22%20%22power%20grids%22",
+    "status": 200,
+    "type": "text/html; charset=UTF-8",
+    "bytes": 92893,
+    "sha256": "b7df9dae7a9c350c900c02ef1ec6f8486020ba9af952d5d808d5bd1a5ea4eda1"
+  },
+  {
+    "name": "gpml2",
+    "url": "https://gaussianprocess.org/gpml/chapters/RW2.pdf",
+    "final_url": "https://gaussianprocess.org/gpml/chapters/RW2.pdf",
+    "status": 200,
+    "type": "application/pdf",
+    "bytes": 466925,
+    "sha256": "33eb573e1a15abbc04191cc57f74076e1df83024d14b934eebfac3b30a3f57ce"
+  },
+  {
+    "name": "gpml5",
+    "url": "https://gaussianprocess.org/gpml/chapters/RW5.pdf",
+    "final_url": "https://gaussianprocess.org/gpml/chapters/RW5.pdf",
+    "status": 200,
+    "type": "application/pdf",
+    "bytes": 862928,
+    "sha256": "38a39db854e36b304a5fb78e70dc261fc6c634014ea1b4004c47d7affcbd8acd"
+  },
+  {
+    "name": "gpml9",
+    "url": "https://gaussianprocess.org/gpml/chapters/RW9.pdf",
+    "final_url": "https://gaussianprocess.org/gpml/chapters/RW9.pdf",
+    "status": 200,
+    "type": "application/pdf",
+    "bytes": 304110,
+    "sha256": "574f680b72764a1966f1a62c254ae2b909bfb6c320a295709c07f23cc7e9d437"
+  },
+  {
+    "name": "multioutput",
+    "url": "https://arxiv.org/html/1106.6251",
+    "final_url": "https://arxiv.org/html/1106.6251",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "bytes": 702809,
+    "sha256": "a40245fb561482449ffa36482825c0833babbed1e220268786273caf97cba08a"
+  },
+  {
+    "name": "conformal_intro",
+    "url": "https://arxiv.org/html/2107.07511",
+    "final_url": "https://arxiv.org/html/2107.07511",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "bytes": 826401,
+    "sha256": "c0021cce3806354b307420e9e196fe85a4ebf4b50c90d3d3d607f649839438e5"
+  },
+  {
+    "name": "gpflow_coregion",
+    "url": "https://gpflow.github.io/GPflow/develop/notebooks/advanced/coregionalisation.html",
+    "final_url": "https://gpflow.github.io/GPflow/develop/notebooks/advanced/coregionalisation.html",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "bytes": 45022,
+    "sha256": "309d2c51627e528611168a698378c6a05c248c853c025cf90ecc72992d0fd587"
+  },
+  {
+    "name": "sklearn_gpr",
+    "url": "https://scikit-learn.org/stable/modules/gaussian_process.html",
+    "final_url": "https://scikit-learn.org/stable/modules/gaussian_process.html",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "bytes": 90873,
+    "sha256": "0ac7d20d86466f32fdab80b080910b04c8e715709b6bab2efaa1a5f1dbf69333"
+  },
+  {
+    "name": "corr_rwth",
+    "url": "https://publications.rwth-aachen.de/record/1036173",
+    "error": "HTTPSConnectionPool(host='publications.rwth-aachen.de', port=443): Max retries exceeded with url: /record/1036173 (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))"
+  },
+  {
+    "name": "corr_semantic_api",
+    "url": "https://api.semanticscholar.org/graph/v1/paper/DOI:10.1109/tim.2026.3684671?fields=title,authors,year,abstract,openAccessPdf,externalIds,url",
+    "final_url": "https://api.semanticscholar.org/graph/v1/paper/DOI:10.1109/tim.2026.3684671?fields=title,authors,year,abstract,openAccessPdf,externalIds,url",
+    "status": 200,
+    "type": "application/json",
+    "bytes": 2757,
+    "sha256": "a92ed4b69c24583374006ed478d1907c3034209e5d3f568761b0ef2e0965d8d2"
+  },
+  {
+    "name": "physics_bing",
+    "url": "https://www.bing.com/search?q=%22physics-informed%22+%22Gaussian+process%22+%22power+grids%22",
+    "final_url": "https://www.bing.com/search?q=%22physics-informed%22+%22Gaussian+process%22+%22power+grids%22",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "bytes": 421819,
+    "sha256": "dc53d25e38dd61b97d3fc273d84a116aef8935a87704d5f37083ce13a5cd4871"
+  },
+  {
+    "name": "dsse_gp_bing",
+    "url": "https://www.bing.com/search?q=%22state+estimation%22+%22Gaussian+process%22+%22distribution%22",
+    "final_url": "https://www.bing.com/search?q=%22state+estimation%22+%22Gaussian+process%22+%22distribution%22",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "bytes": 432170,
+    "sha256": "7eff25344b66572ed03b1c718cea4cb4c985a62574135c96ef00d4614700976d"
+  },
+  {
+    "name": "input_noise_bing",
+    "url": "https://www.bing.com/search?q=%22Gaussian+Process+Training+with+Input+Noise%22",
+    "final_url": "https://www.bing.com/search?q=%22Gaussian+Process+Training+with+Input+Noise%22",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "bytes": 329840,
+    "sha256": "32d0b80de654d1ef5d8487f2972452eaf8b963c1bf669ec2c7ae98b683e4bdd3"
+  },
+  {
+    "name": "corr2025_bing",
+    "url": "https://www.bing.com/search?q=%22Distribution+Grid+Voltage+Estimation+by+Correlated+Gaussian+Processes%22",
+    "final_url": "https://www.bing.com/search?q=%22Distribution+Grid+Voltage+Estimation+by+Correlated+Gaussian+Processes%22",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "bytes": 122272,
+    "sha256": "4dbd9c02f14bf3f7c7519d836bafbb6a93fc8f554afbdab827e7b4b7e0890cb1"
+  },
+  {
+    "name": "gp_ard_matern",
+    "url": "https://gaussianprocess.org/gpml/chapters/RW4.pdf",
+    "final_url": "https://gaussianprocess.org/gpml/chapters/RW4.pdf",
+    "status": 200,
+    "type": "application/pdf",
+    "bytes": 691362,
+    "sha256": "86008036a346076ff07f8f0a3a94725ad12c572e6bf62bd16ee7f057a42d4175"
+  },
+  {
+    "name": "sparse_gp",
+    "url": "https://proceedings.mlr.press/v5/titsias09a.html",
+    "final_url": "https://proceedings.mlr.press/v5/titsias09a.html",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "bytes": 15697,
+    "sha256": "43a3559f1fc2ed88b38fccdbdb2199294daa0e551148f777f11b80030f56b612"
+  },
+  {
+    "name": "regression_calibration",
+    "url": "https://proceedings.mlr.press/v80/kuleshov18a.html",
+    "final_url": "https://proceedings.mlr.press/v80/kuleshov18a.html",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "bytes": 14748,
+    "sha256": "7beec83c7d6cd27eec7f858d145bcc1062297c599fe37f5181c67f639e973fbc"
+  },
+  {
+    "name": "adaptive_conformal",
+    "url": "https://arxiv.org/html/2106.00170",
+    "final_url": "https://arxiv.org/html/2106.00170",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "bytes": 576147,
+    "sha256": "bc5bddd97aded44004d4afcac5476c02650aa83e240b55ec2aa9cfb70deee7d5"
+  },
+  {
+    "name": "time_series_cv",
+    "url": "https://www.bing.com/search?q=%22Cross-validation+strategies+for+data+with+temporal%22",
+    "final_url": "https://www.bing.com/search?q=%22Cross-validation+strategies+for+data+with+temporal%22",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "bytes": 440043,
+    "sha256": "6d13d6a1e9f14dd36e2788451df96ef0fa2e4150a8277b6e523a2ecb2598680d"
+  },
+  {
+    "name": "simbench_paper",
+    "url": "https://www.bing.com/search?q=%22SimBench%22+%22Benchmark+Dataset%22",
+    "final_url": "https://www.bing.com/search?q=%22SimBench%22+%22Benchmark+Dataset%22",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "bytes": 123474,
+    "sha256": "af8b144d53cd1c010d7ab98a2eedeb8cf6f68837837e6545a884194977e81550"
+  },
+  {
+    "name": "pi_arxiv",
+    "url": "https://arxiv.org/html/2010.04591",
+    "final_url": "https://arxiv.org/html/2010.04591",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "bytes": 447944,
+    "sha256": "e3e49724e16651c88e72d9e8314ee0ed440bc33e9a24ba0eee4175078fee661d"
+  },
+  {
+    "name": "pi_2018",
+    "url": "https://arxiv.org/html/1806.10990",
+    "final_url": "https://arxiv.org/html/1806.10990",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "bytes": 173630,
+    "sha256": "da9ed23d0afdf6492d6b183ea581a0ff6f25c71476d2177edbb93d39526a0989"
+  },
+  {
+    "name": "corr_rwth_https",
+    "url": "https://publications.rwth-aachen.de/record/1036173?ln=en",
+    "error": "HTTPSConnectionPool(host='publications.rwth-aachen.de', port=443): Max retries exceeded with url: /record/1036173?ln=en (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))"
+  },
+  {
+    "name": "corr_juser_search",
+    "url": "https://juser.fz-juelich.de/search?ln=en&p=Distribution+System+State+Estimation+by+Correlated+Gaussian+Processes&action_search=Search",
+    "error": "HTTPSConnectionPool(host='juser.fz-juelich.de', port=443): Max retries exceeded with url: /search?ln=en&p=Distribution+System+State+Estimation+by+Correlated+Gaussian+Processes&action_search=Search (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))"
+  },
+  {
+    "name": "input_noise_pdf",
+    "url": "https://proceedings.neurips.cc/paper/2011/file/a8e864d04c95572d1aece099af852d0a-Paper.pdf",
+    "final_url": "https://proceedings.neurips.cc/paper/2011/file/a8e864d04c95572d1aece099af852d0a-Paper.pdf",
+    "status": 200,
+    "type": "application/pdf",
+    "bytes": 479105,
+    "sha256": "5a9261a2dc36a8a175ce6efb01bc66893be7c1d97133e1c81fe11eda5d8eb7e9"
+  },
+  {
+    "name": "conformal_timeseries",
+    "url": "https://proceedings.mlr.press/v139/xu21h.html",
+    "final_url": "https://proceedings.mlr.press/v139/xu21h.html",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "bytes": 14560,
+    "sha256": "965863ac6a4ef8c7f0e05e8950bb1238c64a9c623b128e10544ed7f3371ab25e"
+  },
+  {
+    "name": "corr_openalex",
+    "url": "https://api.openalex.org/works/https://doi.org/10.1109/TIM.2026.3684671",
+    "final_url": "https://api.openalex.org/works/https://doi.org/10.1109/TIM.2026.3684671",
+    "status": 200,
+    "type": "application/json",
+    "bytes": 19850,
+    "sha256": "e434ce9beca4a7f39a0b973b28b98d19cd33e9469c185f212c1b9ca2a765eb5d"
+  },
+  {
+    "name": "corr_2025_semantic",
+    "url": "https://api.semanticscholar.org/graph/v1/paper/DOI:10.1109/AMPS66841.2025.11219969?fields=title,authors,year,abstract,openAccessPdf,externalIds",
+    "final_url": "https://api.semanticscholar.org/graph/v1/paper/DOI:10.1109/AMPS66841.2025.11219969?fields=title,authors,year,abstract,openAccessPdf,externalIds",
+    "status": 200,
+    "type": "application/json",
+    "bytes": 1742,
+    "sha256": "1382ff0a8748452253d690d1c290e23725b3e77a1d00b1075bbc5e7b02668a46"
+  },
+  {
+    "name": "pi_journal_semantic",
+    "url": "https://api.semanticscholar.org/graph/v1/paper/ARXIV:2010.04591?fields=title,authors,year,abstract,openAccessPdf,externalIds",
+    "final_url": "https://api.semanticscholar.org/graph/v1/paper/ARXIV:2010.04591?fields=title,authors,year,abstract,openAccessPdf,externalIds",
+    "status": 429,
+    "type": "application/json",
+    "bytes": 174,
+    "sha256": "65ab993d12c5c2cc9b68e6da2bb79b326930283e520363ffcdc145f88cd5a148"
+  },
+  {
+    "name": "sparse_full",
+    "url": "https://proceedings.mlr.press/v5/titsias09a/titsias09a.pdf",
+    "final_url": "https://proceedings.mlr.press/v5/titsias09a/titsias09a.pdf",
+    "status": 200,
+    "type": "application/pdf",
+    "bytes": 585990,
+    "sha256": "e620ba5aa3072506ffc269de9ac576e4255f9008a3d5f41e91e8941cc58fc5e2"
+  },
+  {
+    "name": "calibration_full",
+    "url": "https://proceedings.mlr.press/v80/kuleshov18a/kuleshov18a.pdf",
+    "final_url": "https://proceedings.mlr.press/v80/kuleshov18a/kuleshov18a.pdf",
+    "status": 200,
+    "type": "application/pdf",
+    "bytes": 2841541,
+    "sha256": "dc7bc28854f68e29a36232bbdd4779d246c5e18e45dcf8e445f7f6810668c10b"
+  },
+  {
+    "name": "timeseries_conformal_full",
+    "url": "https://proceedings.mlr.press/v139/xu21h/xu21h.pdf",
+    "final_url": "https://proceedings.mlr.press/v139/xu21h/xu21h.pdf",
+    "status": 200,
+    "type": "application/pdf",
+    "bytes": 2930562,
+    "sha256": "d7f3850a67f7bc7d2326d2bff426130184272c802af6ae85e1d958f804b0568e"
+  },
+  {
+    "name": "physics_spectrum_search",
+    "url": "https://www.bing.com/search?q=%22A+spectrum+of+physics-informed+Gaussian+processes%22",
+    "final_url": "https://www.bing.com/search?q=%22A+spectrum+of+physics-informed+Gaussian+processes%22",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "bytes": 323835,
+    "sha256": "b9dc0bdc3763de3beb8b9726ea338beb5278734b184a78468059ccdf3e96f14c"
+  },
+  {
+    "name": "physics_kriging_search",
+    "url": "https://www.bing.com/search?q=%22Physics-informed+Kriging%22",
+    "final_url": "https://www.bing.com/search?q=%22Physics-informed+Kriging%22",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "bytes": 117816,
+    "sha256": "0d8d2b671add4037e5687b8a8798794fd8256055cd4194b23a6bc984a9a9f3b1"
+  },
+  {
+    "name": "graphical_scarce_search",
+    "url": "https://www.bing.com/search?q=%22Gaussian+Process-Regularized%22+%22Graphical%22",
+    "final_url": "https://www.bing.com/search?q=%22Gaussian+Process-Regularized%22+%22Graphical%22",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "bytes": 123428,
+    "sha256": "457b371adbeb169252d704371ed1a4328862d789062b2d6c2055521bd69c4d68"
+  },
+  {
+    "name": "gp_dsse_recursive",
+    "url": "https://www.bing.com/search?q=%22state+estimation%22+%22recursive%22+%22Gaussian%22+2023",
+    "final_url": "https://www.bing.com/search?q=%22state+estimation%22+%22recursive%22+%22Gaussian%22+2023",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "bytes": 394688,
+    "sha256": "598f6f5a036d5c99b605a1c50f59976553e0d9b9fe935ad5544bc4cdc4a62ca9"
+  },
+  {
+    "name": "semantic_0",
+    "url": "https://api.semanticscholar.org/graph/v1/paper/DOI:10.1109/OJIES.2024.3423405?fields=title,authors,year,abstract,openAccessPdf,externalIds",
+    "final_url": "https://api.semanticscholar.org/graph/v1/paper/DOI:10.1109/OJIES.2024.3423405?fields=title,authors,year,abstract,openAccessPdf,externalIds",
+    "status": 429,
+    "type": "application/json",
+    "bytes": 174,
+    "sha256": "65ab993d12c5c2cc9b68e6da2bb79b326930283e520363ffcdc145f88cd5a148"
+  },
+  {
+    "name": "semantic_1",
+    "url": "https://api.semanticscholar.org/graph/v1/paper/DOI:10.1109/TPWRS.2022.3204415?fields=title,authors,year,abstract,openAccessPdf,externalIds",
+    "final_url": "https://api.semanticscholar.org/graph/v1/paper/DOI:10.1109/TPWRS.2022.3204415?fields=title,authors,year,abstract,openAccessPdf,externalIds",
+    "status": 200,
+    "type": "application/json",
+    "bytes": 2169,
+    "sha256": "cf91e3aabf64f56b3ca578910a2ebf534319165eeda6119e63b3d2f151c5c2de"
+  },
+  {
+    "name": "semantic_2",
+    "url": "https://api.semanticscholar.org/graph/v1/paper/DOI:10.1109/TSG.2022.3204221?fields=title,authors,year,abstract,openAccessPdf,externalIds",
+    "final_url": "https://api.semanticscholar.org/graph/v1/paper/DOI:10.1109/TSG.2022.3204221?fields=title,authors,year,abstract,openAccessPdf,externalIds",
+    "status": 200,
+    "type": "application/json",
+    "bytes": 1648,
+    "sha256": "6b23e3b7b1db77168bcbe2c071294682d7d275c06fa7ad10b17594581722370c"
+  },
+  {
+    "name": "semantic_3",
+    "url": "https://api.semanticscholar.org/graph/v1/paper/DOI:10.1109/TII.2024.3394553?fields=title,authors,year,abstract,openAccessPdf,externalIds",
+    "final_url": "https://api.semanticscholar.org/graph/v1/paper/DOI:10.1109/TII.2024.3394553?fields=title,authors,year,abstract,openAccessPdf,externalIds",
+    "status": 429,
+    "type": "application/json",
+    "bytes": 174,
+    "sha256": "65ab993d12c5c2cc9b68e6da2bb79b326930283e520363ffcdc145f88cd5a148"
+  },
+  {
+    "name": "semantic_4",
+    "url": "https://api.semanticscholar.org/graph/v1/paper/DOI:10.1109/PESGM51994.2024.10688998?fields=title,authors,year,abstract,openAccessPdf,externalIds",
+    "final_url": "https://api.semanticscholar.org/graph/v1/paper/DOI:10.1109/PESGM51994.2024.10688998?fields=title,authors,year,abstract,openAccessPdf,externalIds",
+    "status": 429,
+    "type": "application/json",
+    "bytes": 174,
+    "sha256": "65ab993d12c5c2cc9b68e6da2bb79b326930283e520363ffcdc145f88cd5a148"
+  },
+  {
+    "name": "semantic_5",
+    "url": "https://api.semanticscholar.org/graph/v1/paper/DOI:10.1109/TIM.2023.3287253?fields=title,authors,year,abstract,openAccessPdf,externalIds",
+    "final_url": "https://api.semanticscholar.org/graph/v1/paper/DOI:10.1109/TIM.2023.3287253?fields=title,authors,year,abstract,openAccessPdf,externalIds",
+    "status": 200,
+    "type": "application/json",
+    "bytes": 1923,
+    "sha256": "d14e34d525f9188cc4a2d65c12d51e3e3e527761253e6b94e8a1a99817d6eeb8"
+  },
+  {
+    "name": "corr2024_pdf",
+    "url": "https://ieeexplore.ieee.org/ielx8/8782706/10417853/10585294.pdf",
+    "final_url": "https://ieeexplore.ieee.org/ielx8/8782706/10417853/10585294.pdf",
+    "status": 200,
+    "type": "application/pdf",
+    "bytes": 1055560,
+    "sha256": "82bb3c2e4ee36d6299c06fce94528945c4d8312d7042d42b78ae76075ad3e28f"
+  },
+  {
+    "name": "corr2024_bing",
+    "url": "https://www.bing.com/search?q=%22Signal%20Recovery%20in%20Power%20Systems%20by%20Correlated%20Gaussian%20Processes%22",
+    "final_url": "https://www.bing.com/search?q=%22Signal%20Recovery%20in%20Power%20Systems%20by%20Correlated%20Gaussian%20Processes%22",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "bytes": 282386,
+    "sha256": "bcea5f66cde5786c5bff18293e3813f61e8bb81efe5230f272d0b1894adea7d5"
+  },
+  {
+    "name": "recursive_full",
+    "url": "https://arxiv.org/html/2209.01703",
+    "final_url": "https://arxiv.org/html/2209.01703",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "bytes": 399470,
+    "sha256": "8e3176054bcf283dc943d0fb3d8e8be83fb9c1f1f6828a0090014f6cbabe0f23"
+  },
+  {
+    "name": "nongaussian_full",
+    "url": "https://arxiv.org/html/2303.03029",
+    "final_url": "https://arxiv.org/html/2303.03029",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "bytes": 186808,
+    "sha256": "7ca66c8cb6b2694b07ccf0e7095e00aba6155c6f41794b6b17cc056a3138a538"
+  },
+  {
+    "name": "raissi_gp",
+    "url": "https://arxiv.org/html/1701.02440",
+    "final_url": "https://arxiv.org/html/1701.02440",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "bytes": 206053,
+    "sha256": "7282498183b0086bc30c6576cf1f444560bb7def71b28fa0cfb14359c1066ce2"
+  },
+  {
+    "name": "corr2026_pdf",
+    "url": "https://ieeexplore.ieee.org/ielx8/19/11329398/11482821.pdf",
+    "final_url": "https://ieeexplore.ieee.org/Xplore/login.jsp?url=%2Fielx8%2F19%2F11329398%2F11482821.pdf&authDecision=-203",
+    "status": 200,
+    "type": "text/html;charset=UTF-8",
+    "bytes": 36534,
+    "sha256": "aba6b150cce1e64187afc163d3373fcd4886e917f32e8ff8bd8dfcd6b69786e9"
+  },
+  {
+    "name": "corr2025_pdf",
+    "url": "https://ieeexplore.ieee.org/ielx8/11219883/11219907/11219969.pdf",
+    "final_url": "https://ieeexplore.ieee.org/Xplore/login.jsp?url=%2Fielx8%2F11219883%2F11219907%2F11219969.pdf&authDecision=-203",
+    "status": 200,
+    "type": "text/html;charset=UTF-8",
+    "bytes": 36534,
+    "sha256": "76d51553ce0b07acee72feccd02b80bd421f4db21900250662e51e53b5b056f1"
+  },
+  {
+    "name": "pi_spectrum_full",
+    "url": "https://arxiv.org/html/2309.10656",
+    "final_url": "https://arxiv.org/html/2309.10656",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "bytes": 175467,
+    "sha256": "d57865cab73ffb4d33e1a59e0c49fb393ad06ec5a82cf960b3daa507e54605bf"
+  },
+  {
+    "name": "power_gp_review",
+    "url": "https://arxiv.org/html/2505.15950",
+    "final_url": "https://arxiv.org/html/2505.15950",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "bytes": 405888,
+    "sha256": "fbcc386cf611d285d2c7bd65331486427d8ec718c1f0ee228d274972cecd88c2"
+  },
+  {
+    "name": "physics_kriging_primary",
+    "url": "https://arxiv.org/html/1809.03461",
+    "final_url": "https://arxiv.org/html/1809.03461",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "bytes": 620757,
+    "sha256": "405b8802731b42233bea5643f31f37e22d8e3e33686ccc1e26b70b20ae51570f"
+  }
+]

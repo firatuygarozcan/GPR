@@ -1,0 +1,63 @@
+{
+  "theta_counterfactual_inputs_and_voltage_targets_unchanged": true,
+  "constant_input_columns_over_sample": [
+    "bus_2_p_mw",
+    "bus_2_q_mvar",
+    "bus_15_p_mw",
+    "bus_15_q_mvar"
+  ],
+  "sample_highly_correlated_input_pairs_above_0_999": 14,
+  "sample_standardized_input_singular_values": [
+    78.58250109832598,
+    41.4555818847351,
+    34.52659515788731,
+    31.5187965627542,
+    26.107701312314404,
+    22.63426024031143,
+    21.896116888664913,
+    19.69518396361676,
+    17.864955968114923,
+    16.520630113418196,
+    16.219149393751266,
+    12.070853462936364,
+    11.39324725079231,
+    8.571416105821166,
+    6.032443791942007,
+    4.768100643514614,
+    3.8145285665157784,
+    3.4646941777781124,
+    2.5854459791165203,
+    1.3848424965765902,
+    0.732066958889038,
+    0.6115188554898892,
+    0.33067747564369493,
+    0.09438254412160843,
+    0.05096021001408071,
+    0.020137721373360205,
+    0.011829526846318966,
+    0.001368508123545084,
+    8.71443754217639e-05,
+    4.117032832205156e-05,
+    9.41937818459126e-06,
+    5.3400238470200706e-14,
+    3.172832390364067e-14,
+    1.571162647424577e-14,
+    1.4114508329581035e-14
+  ],
+  "synthetic_cache_fingerprint_probe": {
+    "original_metadata_accepted": true,
+    "line_resistance_changed_by_10percent_still_accepted": true,
+    "stub_files_used_only_outside_application": true
+  },
+  "current_network_open_switches": 0,
+  "hypothetical_open_line_switch_probe": {
+    "line": 0,
+    "buses": [
+      19,
+      9
+    ],
+    "dashboard_keeps_open_line_edge": true,
+    "pandapower_respects_open_switch": true
+  },
+  "source_files_unchanged": true
+}

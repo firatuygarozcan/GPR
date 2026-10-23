@@ -1,0 +1,11 @@
+{
+  "seasonal/config.py": "2073675ca36b4db63ad08eb68a87486f18e2cd0d96c6cdecda0dec6d40a18024",
+  "seasonal/dashboard.py": "76b28dcc9d1c41e1ec746d639c72b067319c1c4f9c63ad3d038af5eae528bb84",
+  "seasonal/dsse.py": "90b0a1079d031295802c3ad595ee3630211d840e964883e4c7a3d3026468aac3",
+  "seasonal/kernel_diagnostics.py": "8bc9e57ed5c9892757670077b23920568f641f4846781a60c12dc9f3aaf2b090",
+  "seasonal/seasonal_evaluation.py": "9d0148d243071e030a62067c6088bf3f433bb65f8bae47a5e535df38b88cf88d",
+  "seasonal/seasonal_evaluation_noise_free.py": "02fae091edaf7262fe1649bda1867ff15fdb6ac0cdfb17d3469bb999923b9b5c",
+  "seasonal/stress_analysis.py": "b9a54b13868c8248a69527c1ff300578f41049bc7a8ba1f56d9477bbc2ae82ac",
+  "seasonal/winter_independent_evaluation.py": "a8539e2c9a90f44c39f98ccfc52b03490f2c2a0ebda1c0f6c5b1a2c4df6266ce",
+  "tests/test_dashboard_heatmaps.py": "b114667d40fe6d4a3237a24b5801d49406ed48f543a7905ffae560d361e4b292"
+}

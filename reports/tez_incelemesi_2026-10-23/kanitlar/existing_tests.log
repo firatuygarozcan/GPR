@@ -1,0 +1,8 @@
+.................                                  [100%]
+=============================== warnings summary ===============================
+tests/test_dashboard_heatmaps.py: 48 warnings
+  /workspace/.venvs/gpr-review/lib/python3.12/site-packages/simbench/converter/csv_pp_converter.py:874: FutureWarning: The behavior of DataFrame concatenation with empty or all-NA entries is deprecated. In a future version, this will no longer exclude empty or all-NA columns when determining the result dtypes. To retain the old behavior, exclude the relevant entries before the concat operation.
+    output_data[output_name] = pd.concat([output_data[output_name], input_data[
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+17 passed, 48 warnings, 22 subtests passed in 37.48s

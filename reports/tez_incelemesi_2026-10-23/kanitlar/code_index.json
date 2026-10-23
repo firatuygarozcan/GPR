@@ -1,0 +1,1007 @@
+{
+  "config.py": [],
+  "dashboard.py": [
+    {
+      "name": "case_label",
+      "line": 56,
+      "end_line": 58,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "noise_label",
+      "line": 61,
+      "end_line": 66,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "format_metric",
+      "line": 69,
+      "end_line": 70,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "dashboard_dataframe",
+      "line": 73,
+      "end_line": 80,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "dashboard_plotly_chart",
+      "line": 83,
+      "end_line": 107,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "bus_identity_lookup",
+      "line": 110,
+      "end_line": 115,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "bus_display_label",
+      "line": 118,
+      "end_line": 122,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "bus_full_name",
+      "line": 125,
+      "end_line": 128,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "frame_bus_label_lookup",
+      "line": 131,
+      "end_line": 142,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "live_bus_label",
+      "line": 145,
+      "end_line": 151,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "dashboard_bus_context",
+      "line": 154,
+      "end_line": 216,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "remap_saved_bus_value_dict",
+      "line": 219,
+      "end_line": 232,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "bus_order_from_frame",
+      "line": 235,
+      "end_line": 247,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "hide_internal_bus_columns",
+      "line": 250,
+      "end_line": 283,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "friendly_table",
+      "line": 340,
+      "end_line": 366,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "add_shaded_interval",
+      "line": 369,
+      "end_line": 428,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "find_annual_evaluation_runs",
+      "line": 441,
+      "end_line": 479,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "select_annual_evaluation_run",
+      "line": 482,
+      "end_line": 527,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "load_annual_evaluation",
+      "line": 531,
+      "end_line": 577,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "seasonal_bus_role_metrics",
+      "line": 580,
+      "end_line": 593,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "evaluation_view",
+      "line": 596,
+      "end_line": 629,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "filter_detail_scope",
+      "line": 632,
+      "end_line": 635,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "daily_metric_figure",
+      "line": 638,
+      "end_line": 680,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "bus_metric_figure",
+      "line": 683,
+      "end_line": 723,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "annual_bus_day_heatmap",
+      "line": 727,
+      "end_line": 825,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "selected_run_file",
+      "line": 828,
+      "end_line": 834,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "day_detail_signature",
+      "line": 837,
+      "end_line": 851,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "dashboard_timeline",
+      "line": 855,
+      "end_line": 859,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "validate_day_grid",
+      "line": 862,
+      "end_line": 902,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "validate_day_detail",
+      "line": 905,
+      "end_line": 956,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "verify_day_metrics",
+      "line": 959,
+      "end_line": 981,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "recover_day_detail",
+      "line": 984,
+      "end_line": 1041,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "attach_noisy_voltage_measurements",
+      "line": 1044,
+      "end_line": 1057,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "load_day_noisy_measurements",
+      "line": 1061,
+      "end_line": 1078,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "load_annual_day_detail",
+      "line": 1082,
+      "end_line": 1092,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "annual_day_heatmap_figure",
+      "line": 1095,
+      "end_line": 1180,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "annual_day_all_buses_figure",
+      "line": 1183,
+      "end_line": 1259,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "bus_day_metrics",
+      "line": 1262,
+      "end_line": 1274,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "annual_day_bus_timeseries_figure",
+      "line": 1277,
+      "end_line": 1362,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "load_dashboard_network",
+      "line": 1370,
+      "end_line": 1372,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "topology_graph",
+      "line": 1375,
+      "end_line": 1415,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "_geo_coordinates",
+      "line": 1418,
+      "end_line": 1455,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "network_positions",
+      "line": 1457,
+      "end_line": 1567,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "_safe_float",
+      "line": 1570,
+      "end_line": 1576,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "_safe_text",
+      "line": 1579,
+      "end_line": 1587,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "classify_load_profile",
+      "line": 1590,
+      "end_line": 1620,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "classify_generation_profile",
+      "line": 1623,
+      "end_line": 1642,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "network_component_summary",
+      "line": 1645,
+      "end_line": 1744,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "network_inventory_tables",
+      "line": 1747,
+      "end_line": 1779,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "uncertainty_from_annual_bus_metrics",
+      "line": 1782,
+      "end_line": 1791,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "uncertainty_from_daily_mean",
+      "line": 1794,
+      "end_line": 1810,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "uncertainty_from_timestep",
+      "line": 1813,
+      "end_line": 1818,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "_safe_color_range",
+      "line": 1821,
+      "end_line": 1832,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "_component_offsets",
+      "line": 1835,
+      "end_line": 1843,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "_bus_hover_text",
+      "line": 1846,
+      "end_line": 1872,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "_bus_load_visual_category",
+      "line": 1875,
+      "end_line": 1891,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "_external_grid_marker_positions",
+      "line": 1895,
+      "end_line": 1932,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "network_professional_figure",
+      "line": 1935,
+      "end_line": 2278,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "load_year_analysis",
+      "line": 2284,
+      "end_line": 2296,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "load_stress_run",
+      "line": 2299,
+      "end_line": 2322,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "stress_metrics",
+      "line": 2325,
+      "end_line": 2354,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "stress_overall_from_predictions",
+      "line": 2357,
+      "end_line": 2373,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "extreme_figure",
+      "line": 2376,
+      "end_line": 2451,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "load_kernel_diagnostics_cached",
+      "line": 2458,
+      "end_line": 2464,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "load_winter_kernel_diagnostics_cached",
+      "line": 2471,
+      "end_line": 2472,
+      "kind": "FunctionDef"
+    }
+  ],
+  "dsse.py": [
+    {
+      "name": "safe_name",
+      "line": 44,
+      "end_line": 45,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "validate_simbench_bus_identity",
+      "line": 54,
+      "end_line": 80,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "bus_identity_records",
+      "line": 83,
+      "end_line": 107,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "bus_identity_maps",
+      "line": 110,
+      "end_line": 112,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "simbench_name_to_bus",
+      "line": 115,
+      "end_line": 118,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "saved_to_current_bus_map",
+      "line": 121,
+      "end_line": 166,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "remap_saved_bus_indices",
+      "line": 169,
+      "end_line": 178,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "assert_saved_bus_identity_compatible",
+      "line": 181,
+      "end_line": 209,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "attach_bus_identity_columns",
+      "line": 212,
+      "end_line": 228,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "annual_run_directory",
+      "line": 231,
+      "end_line": 239,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "seasonal_run_directory",
+      "line": 242,
+      "end_line": 254,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "load_network",
+      "line": 257,
+      "end_line": 267,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "get_reference_buses",
+      "line": 270,
+      "end_line": 273,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "select_measured_buses",
+      "line": 276,
+      "end_line": 295,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "package_version",
+      "line": 312,
+      "end_line": 322,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "profile_key",
+      "line": 325,
+      "end_line": 331,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "available_steps",
+      "line": 334,
+      "end_line": 346,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "_profile_time_frames",
+      "line": 349,
+      "end_line": 365,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "build_simbench_timeline",
+      "line": 368,
+      "end_line": 408,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "validate_simbench_timeline",
+      "line": 411,
+      "end_line": 483,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "available_complete_days",
+      "line": 486,
+      "end_line": 489,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "distributed_training_days",
+      "line": 492,
+      "end_line": 524,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "final_training_days",
+      "line": 527,
+      "end_line": 529,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "season_days",
+      "line": 532,
+      "end_line": 545,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "season_for_day",
+      "line": 548,
+      "end_line": 555,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "distributed_days_from_candidates",
+      "line": 558,
+      "end_line": 585,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "seasonal_train_test_split",
+      "line": 588,
+      "end_line": 610,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "day_noise_seed",
+      "line": 613,
+      "end_line": 615,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "ground_truth_directory",
+      "line": 618,
+      "end_line": 624,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "ground_truth_paths",
+      "line": 627,
+      "end_line": 636,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "_absolute_profile_summary",
+      "line": 639,
+      "end_line": 672,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "_normalize_logged_frame",
+      "line": 675,
+      "end_line": 699,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "_writer_parameters",
+      "line": 702,
+      "end_line": 704,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "_bool_series",
+      "line": 707,
+      "end_line": 712,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "_current_versions",
+      "line": 715,
+      "end_line": 719,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "_element_counts",
+      "line": 722,
+      "end_line": 729,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "_cached_ground_truth_report",
+      "line": 732,
+      "end_line": 752,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "build_full_year_ground_truth",
+      "line": 755,
+      "end_line": 959,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "_assert_ground_truth_bus_identity_compatible",
+      "line": 962,
+      "end_line": 985,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "load_full_year_powerflow_state",
+      "line": 988,
+      "end_line": 1004,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "_long_ground_truth_from_payload",
+      "line": 1007,
+      "end_line": 1036,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "load_ground_truth",
+      "line": 1039,
+      "end_line": 1056,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "get_day_ground_truth",
+      "line": 1059,
+      "end_line": 1069,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "simulate_day",
+      "line": 1072,
+      "end_line": 1079,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "build_voltage_dataset",
+      "line": 1087,
+      "end_line": 1143,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "add_measurement_noise",
+      "line": 1146,
+      "end_line": 1171,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "add_noise_by_day",
+      "line": 1174,
+      "end_line": 1186,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "build_kernel",
+      "line": 1194,
+      "end_line": 1215,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "DSSEGaussianProcess",
+      "line": 1218,
+      "end_line": 1309,
+      "kind": "ClassDef"
+    },
+    {
+      "name": "evaluate",
+      "line": 1312,
+      "end_line": 1324,
+      "kind": "FunctionDef"
+    }
+  ],
+  "kernel_diagnostics.py": [
+    {
+      "name": "_load_config",
+      "line": 22,
+      "end_line": 25,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "_pairwise_euclidean",
+      "line": 28,
+      "end_line": 31,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "_even_indices",
+      "line": 34,
+      "end_line": 37,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "compute_kernel_diagnostics",
+      "line": 40,
+      "end_line": 178,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "train_train_heatmap_figure",
+      "line": 181,
+      "end_line": 201,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_train_heatmap_figure",
+      "line": 204,
+      "end_line": 234,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_test_heatmap_figure",
+      "line": 237,
+      "end_line": 258,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "true_voltage_state_difference_heatmap_figure",
+      "line": 261,
+      "end_line": 286,
+      "kind": "FunctionDef"
+    }
+  ],
+  "seasonal_evaluation.py": [
+    {
+      "name": "chunked",
+      "line": 62,
+      "end_line": 64,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "empty_metric_accumulator",
+      "line": 67,
+      "end_line": 74,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "add_metrics_to_accumulator",
+      "line": 77,
+      "end_line": 89,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "finalize_metric_accumulator",
+      "line": 92,
+      "end_line": 108,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "empty_bus_accumulator",
+      "line": 111,
+      "end_line": 112,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "update_bus_accumulator",
+      "line": 115,
+      "end_line": 123,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "finalize_bus_metrics",
+      "line": 126,
+      "end_line": 138,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "daily_bus_metrics",
+      "line": 141,
+      "end_line": 167,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "save_daily_diagnostics",
+      "line": 170,
+      "end_line": 252,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "scope_buses",
+      "line": 255,
+      "end_line": 260,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "main",
+      "line": 263,
+      "end_line": 763,
+      "kind": "FunctionDef"
+    }
+  ],
+  "seasonal_evaluation_noise_free.py": [
+    {
+      "name": "require_existing_ground_truth",
+      "line": 77,
+      "end_line": 101,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "main",
+      "line": 104,
+      "end_line": 602,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "seasonal_config",
+      "line": 605,
+      "end_line": 608,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "prepare_stress_inputs",
+      "line": 611,
+      "end_line": 652,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "evaluate_stress_cases",
+      "line": 655,
+      "end_line": 755,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "run_stress_analysis",
+      "line": 758,
+      "end_line": 777,
+      "kind": "FunctionDef"
+    }
+  ],
+  "stress_analysis.py": [
+    {
+      "name": "case_label",
+      "line": 41,
+      "end_line": 42,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "year_analysis_directory",
+      "line": 45,
+      "end_line": 48,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "seasonal_config",
+      "line": 51,
+      "end_line": 59,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "_absolute_total_series",
+      "line": 67,
+      "end_line": 83,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "load_or_simulate_year",
+      "line": 86,
+      "end_line": 157,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "find_physical_cases",
+      "line": 160,
+      "end_line": 194,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "physical_voltage_profiles",
+      "line": 197,
+      "end_line": 222,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "save_physical_analysis",
+      "line": 225,
+      "end_line": 229,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "focus_bus_for_case",
+      "line": 247,
+      "end_line": 250,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "prepare_stress_inputs",
+      "line": 253,
+      "end_line": 295,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "pooled_metrics",
+      "line": 298,
+      "end_line": 319,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "build_stress_results",
+      "line": 322,
+      "end_line": 431,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "stress_overall_metrics",
+      "line": 434,
+      "end_line": 475,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "evaluate_stress_cases",
+      "line": 478,
+      "end_line": 578,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "print_summary",
+      "line": 581,
+      "end_line": 609,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "main",
+      "line": 612,
+      "end_line": 619,
+      "kind": "FunctionDef"
+    }
+  ],
+  "winter_independent_evaluation.py": [
+    {
+      "name": "measurement_inputs",
+      "line": 51,
+      "end_line": 60,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "_run_file",
+      "line": 63,
+      "end_line": 68,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "WinterModelCollection",
+      "line": 71,
+      "end_line": 101,
+      "kind": "ClassDef"
+    },
+    {
+      "name": "load_winter_models",
+      "line": 104,
+      "end_line": 105,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "_new_run_directory",
+      "line": 108,
+      "end_line": 116,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "save_winter_stress",
+      "line": 119,
+      "end_line": 180,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "run_experiment",
+      "line": 183,
+      "end_line": 332,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "compute_winter_kernel_diagnostics",
+      "line": 335,
+      "end_line": 382,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "main",
+      "line": 385,
+      "end_line": 392,
+      "kind": "FunctionDef"
+    }
+  ]
+}
